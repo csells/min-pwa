@@ -1,15 +1,17 @@
 {
-  "short_name": "Minimal PWA",
-  "name": "Minimal Progressive Web App",
+  "//": "from https://developers.google.com/web/fundamentals/web-app-manifest/",
+  "short_name": "min-pwa",
+  "name": "min-pwa",
   "icons": [
     {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ],
   "start_url": "/",
-  "theme_color": "#db7093",
-  "background_color": "#222222",
+  "theme_color": "blue",
+  "background_color": "midnightblue",
+  "orientation": "portrait",
   "display": "standalone"
 }
