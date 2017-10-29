@@ -11,20 +11,94 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="blue">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+  <!-- app -->
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <p>hello, world</p>
+  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="#">min-pwa</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" id="navbarContent">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" data-template="page2">Page2</a>
+        <a class="nav-item nav-link" data-template="page3">Page3</a>
+      </div>
+    </div>
+  </nav>
+
+  <template id="home">
+    <p>home</p>
+  </template>
+
+  <template id="page2">
+    <p>page2</p>
+  </template>
+
+  <template id="page3">
+    <p>page3</p>
+  </template>
+
+  <div id="content" class="jumbotron"></div>
+
+  <script>
+    window.onload = () => {
+      let content = $("#content");
+      let navbar = $(".navbar-collapse");
+
+      function loadContent(templateId) {
+        templateId = templateId || "home";
+
+        // mark the associated nav-item as "active"
+        navbar.find(".active").removeClass("active");
+        navbar.find(`.nav-item[data-template="${templateId}"]`).addClass("active");
+
+        // load route content
+        let template = $(`template#${templateId}`)[0].content;
+        content.html(document.importNode(template, true));
+      }
+
+      $("nav a").on("click", e => {
+        // collapse navbar when a link has been clicked
+        navbar.collapse("hide");
+
+        // navigate to the content
+        let templateId = e.target.getAttribute("data-template");
+        loadContent(templateId);
+
+        // update history
+        window.history.pushState(templateId, null, `/#${templateId}`);
+      });
+
+      // when we navigate through history, load the associated content
+      window.onpopstate = e => loadContent(e.state);
+
+      // select initial content
+      loadContent();
+    };
+  </script>
 
   <script>
     // Check to make sure the browser supports service workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
-      .register('/service-worker.js')
-      .then(() => { console.log('Service worker registered'); })
-      .catch(err => { console.log('Service worker registration failed: ' + err); });
+        .register('/service-worker.js')
+        .then(() => { console.log('Service worker registered'); })
+        .catch(err => { console.log('Service worker registration failed: ' + err); });
     }
   </script>
+
+  <!-- Bootstrap 4 -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>
 
 </html>
