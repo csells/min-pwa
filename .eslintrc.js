@@ -86,10 +86,7 @@ module.exports = {
         "key-spacing": "error",
         "keyword-spacing": "error",
         "line-comment-position": "error",
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        "linebreak-style": "off",
         "lines-around-comment": "error",
         "lines-around-directive": "error",
         "lines-between-class-members": "error",
