@@ -21,7 +21,7 @@
 
 <body>
   <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">min-pwa</a>
+    <a class="navbar-brand" href="/">min-pwa</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -37,13 +37,17 @@
   <template id="home">
     <p>home</p>
   </template>
-
+  
   <template id="page2">
-    <p>page2</p>
+    <p>page 2</p>
   </template>
-
+  
   <template id="page3">
-    <p>page3</p>
+    <p>page 3</p>
+  </template>
+  
+  <template id="notfound">
+    <p>not found</p>
   </template>
 
   <div id="content" class="jumbotron"></div>
@@ -61,7 +65,7 @@
         navbar.find(`.nav-item[data-template="${templateId}"]`).addClass("active");
 
         // load route content
-        let template = $(`template#${templateId}`)[0].content;
+        let template = $(`template#${templateId}`).add($("template#notfound"))[0].content;
         content.html(document.importNode(template, true));
       }
 
@@ -74,14 +78,14 @@
         loadContent(templateId);
 
         // update history
-        window.history.pushState(templateId, null, `/#${templateId}`);
+        window.history.pushState(templateId, null, `/${templateId}`);
       });
 
       // when we navigate through history, load the associated content
       window.onpopstate = e => loadContent(e.state);
 
       // select initial content
-      loadContent();
+      loadContent(window.location.pathname.substr(1));
     };
   </script>
 
