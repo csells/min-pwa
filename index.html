@@ -15,87 +15,96 @@
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 
+  <!-- Vue -->
+  <script src="https://unpkg.com/vue"></script>
+
   <!-- app -->
   <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-    <a class="navbar-brand" data-template="home">min-pwa</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <div id="app">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+      <v-link class="navbar-brand" href="/">min-pwa</v-link>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="navbar-collapse collapse" id="navbarContent">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" data-template="page2">Page2</a>
-        <a class="nav-item nav-link" data-template="page3">Page3</a>
+      <div class="navbar-collapse collapse" id="navbarContent">
+        <div class="navbar-nav">
+          <v-link class="nav-item nav-link" href="/page2">Page2</v-link>
+          <v-link class="nav-item nav-link" href="/page3">Page3</v-link>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <template id="home">
-    <p>home</p>
-  </template>
-  
-  <template id="page2">
-    <p>page 2</p>
-  </template>
-  
-  <template id="page3">
-    <p>page 3</p>
-  </template>
-  
-  <template id="notfound">
-    <p>not found</p>
-  </template>
-
-  <div id="content" class="jumbotron"></div>
+    <v-content class="jumbotron"></v-content>
+  </div>
 
   <script>
-    window.onload = () => {
-      let content = $("#content");
-      let navbar = $(".navbar-collapse");
-
-      function loadContent(templateId) {
-        templateId = templateId || "home";
-
-        // mark the associated nav-item as "active"
-        navbar.find(".active").removeClass("active");
-        navbar.find(`.nav-item[data-template="${templateId}"]`).addClass("active");
-
-        // load route content
-        let template = $(`template#${templateId}`).add($("template#notfound"))[0].content;
-        content.html(document.importNode(template, true));
-      }
-
-      $("nav a").on("click", e => {
-        // collapse navbar when a link has been clicked
-        navbar.collapse("hide");
-
-        // navigate to the content
-        let templateId = e.target.getAttribute("data-template");
-        loadContent(templateId);
-
-        // update history
-        window.history.pushState(templateId, null, `/${templateId}`);
-      });
-
-      // when we navigate through history, load the associated content
-      window.onpopstate = e => loadContent(e.state);
-
-      // select initial content
-      loadContent(window.location.pathname.substr(1));
+    const routes = {
+      "/": "home-content",
+      "/page2": "page2-content",
+      "/page3": "page3-content",
     };
+
+    Vue.component("v-link", {
+      template: "<a :href='href' :class='{active: isActive}' @click='click'><slot></slot></a>",
+      props: {
+        href: {
+          type: String,
+          required: true
+        }
+      },
+      computed: {
+        isActive() {
+          return this.href === this.$root.currentRoute
+        }
+      },
+      methods: {
+        click(e) {
+          e.preventDefault();
+          $(".navbar-collapse").collapse("hide");
+          this.$root.currentRoute = this.href;
+          window.history.pushState(null, routes[this.href], this.href);
+        }
+      }
+    });
+
+    Vue.component("v-content", {
+      computed: {
+        ViewComponent() {
+          return routes[this.$root.currentRoute] || "notfound-content";
+        }
+      },
+      render(h) {
+        return h(this.ViewComponent)
+      }
+    });
+
+    Vue.component("home-content", { template: "<p>home</p>" });
+    Vue.component("page2-content", { template: "<p>page 2</p>", });
+    Vue.component("page3-content", { template: "<p>page 3</p>", });
+    Vue.component("notfound-content", { template: "<p>not found</p>", });
+
+    const app = new Vue({
+      el: "#app",
+      data: {
+        currentRoute: window.location.pathname
+      },
+    })
+
+    // when we navigate through history, load the associated content
+    window.onpopstate = () => app.currentRoute = window.location.pathname;
   </script>
 
   <script>
     // Check to make sure the browser supports service workers
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register('/service-worker.js')
-        .then(() => { console.log('Service worker registered'); })
-        .catch(err => { console.log('Service worker registration failed: ' + err); });
+        .register("/service-worker.js")
+        .then(() => { console.log("Service worker registered"); })
+        .catch(err => { console.log("Service worker registration failed: " + err); });
     }
   </script>
 
