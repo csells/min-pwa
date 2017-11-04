@@ -12,3 +12,8 @@ Minimal PWA with a simple responsive menu using Boostrap 4 Vue 2.x and very simp
 
 ## Routing
 The solutions that contain routing assume a web server configured to route 404 errors to /index.html to allow for client-side routing.
+For example, if you're using [local web server](https://github.com/lwsjs/local-web-server), then you'd start it like the following:
+
+```
+$ ws --spa index.html
+```
