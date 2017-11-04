@@ -25,15 +25,15 @@
 <body>
   <div id="app">
     <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-      <v-link class="navbar-brand" href="#">min-pwa</v-link>
+      <v-link class="navbar-brand" href="/">min-pwa</v-link>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="navbar-collapse collapse" id="navbarContent">
         <div class="navbar-nav">
-          <v-link class="nav-item nav-link" href="#page2">Page2</v-link>
-          <v-link class="nav-item nav-link" href="#page3">Page3</v-link>
+          <v-link class="nav-item nav-link" href="/page2">Page2</v-link>
+          <v-link class="nav-item nav-link" href="/page3">Page3</v-link>
         </div>
       </div>
     </nav>
@@ -43,9 +43,9 @@
 
   <script>
     const routes = {
-      "#": "home-content",
-      "#page2": "page2-content",
-      "#page3": "page3-content",
+      "/": "home-content",
+      "/page2": "page2-content",
+      "/page3": "page3-content",
     };
 
     Vue.component("v-link", {
